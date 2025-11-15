@@ -1,0 +1,7 @@
+# .gitignore content
+.env # The actual file with secrets is ignored
+
+# Optional: You can include other common files/folders to ignore
+/node_modules
+/dist
+npm-debug.log
