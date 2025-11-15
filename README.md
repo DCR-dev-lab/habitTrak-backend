@@ -44,6 +44,7 @@ This repository contains the backend REST API built with Node.js, Express, and M
 
 ## 📁 Project Structure
 habitTrak-backend
+```
 │── config/
 │ └── db.js
 │── controllers/
@@ -53,8 +54,7 @@ habitTrak-backend
 │── server.js
 │── .env
 └── package.json
-
-text
+```
 
 ## 🛠️ Setup Instructions
 
@@ -76,8 +76,8 @@ npm run start
 /api
 
 ✔ Status
--Backend: 100% complete
+- **Backend: 100% complete**
 
--Tested via Postman
+- **Tested via Postman**
 
--Fully connected with the frontend
+- **Fully connected with the frontend**
