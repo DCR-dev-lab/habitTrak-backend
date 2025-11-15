@@ -66,8 +66,16 @@ exports.getLeaderboard = async (req, res) => {
 // Get all challenges
 exports.getAllChallenges = async (req, res) => {
   try {
-    const challenges = await Challenge.find().select("-participants");
-    res.json({ challenges });
+    const challenges = await Challenge.find();
+
+    const secure_data = challenges.map((c) => ({
+      id: c._id,
+      title: c.title,
+      description: c.description,
+      participantsCount: c.participants.length,
+    }));
+
+    res.json({ challenges: secure_data });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -80,7 +88,9 @@ exports.getMyChallenges = async (req, res) => {
     const userId = req.user._id;
     const challenges = await Challenge.find({
       "participants.user": userId,
-    }).lean();
+    })
+      .select("-participants")
+      .lean();
 
     res.json({ challenges });
   } catch (err) {

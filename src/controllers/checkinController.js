@@ -64,6 +64,11 @@ exports.unCheck = async (req, res) => {
         .json({ message: "No check-in found for today to uncheck" });
     }
 
+    await Challenge.updateMany(
+      { "participants.user": req.user._id },
+      { $inc: { "participants.$.score": -1 } }
+    );
+
     res.status(200).json({ message: "Check-in removed successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -114,6 +119,5 @@ exports.getStreak = async (req, res) => {
     res.status(200).json({ streak });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
-  }
-  s;
+  };
 };

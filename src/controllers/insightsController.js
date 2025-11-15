@@ -9,24 +9,29 @@ exports.getWeeklyInsights = async (req, res) => {
     const habitId = req.params.id;
 
     let data = [];
+
     for (let i = 6; i >= 0; i--) {
       const day = new Date();
+      day.setHours(0, 0, 0, 0);
       day.setDate(day.getDate() - i);
+
+      const nextDay = new Date(day);
+      nextDay.setHours(23, 59, 59, 999);
 
       const checkin = await Checkin.findOne({
         user: userId,
         habit: habitId,
-        date: day,
+        date: { $gte: day, $lte: nextDay },
       });
 
       data.push({
         date: day,
-        completed: checkin ? true : false,
+        completed: !!checkin,
       });
     }
+
     res.status(200).json({ weekly: data });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -42,18 +47,24 @@ exports.getMonthlyInsights = async (req, res) => {
 
     for (let i = 29; i >= 0; i--) {
       const day = new Date();
+      day.setHours(0, 0, 0, 0);
       day.setDate(day.getDate() - i);
+
+      const nextDay = new Date(day);
+      nextDay.setHours(23, 59, 59, 999);
+
       const checkin = await Checkin.findOne({
         user: userId,
         habit: habitId,
-        date: day,
+        date: { $gte: day, $lte: nextDay },
       });
 
       data.push({
         date: day,
-        completed: checkin ? true : false,
+        completed: !!checkin,
       });
     }
+
     res.status(200).json({ monthly: data });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -89,7 +100,6 @@ exports.getOverview = async (req, res) => {
     const userId = req.user._id;
 
     const habits = await Habit.find({ user: userId });
-
     let summary = [];
 
     for (let habit of habits) {
@@ -104,8 +114,8 @@ exports.getOverview = async (req, res) => {
         totalCompletions: compltedCount,
       });
 
-      res.status(200).json({ overview: summary });
     }
+    res.status(200).json({ overview: summary });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
